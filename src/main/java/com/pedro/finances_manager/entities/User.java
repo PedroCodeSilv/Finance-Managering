@@ -22,13 +22,13 @@ public class User {
 	@Column(name="nome",  nullable=false )
 	private String name;
 	
-	@Column(name="password_hash",  nullable=false )
+	@Column(name="password_hash", nullable=false )
 	private String passwordHash;
 	
 	@Column(name="email",  nullable=false )
 	private String email;
 	@Column(name="create_at")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 	
 	
 	
@@ -40,7 +40,7 @@ public class User {
 		this.name = name;
 		this.passwordHash = passwordHash;
 		this.email = Email;
-		this.createAt = LocalDateTime.now();
+		this.createdAt = LocalDateTime.now();
 	};
 
 
@@ -79,8 +79,8 @@ public class User {
 	};
 
 
-	public LocalDateTime getCreateAt() {
-		return createAt;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	};
 	
 	/*Equal/Hash it's do some id, don't include all camps*/

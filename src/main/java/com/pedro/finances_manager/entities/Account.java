@@ -3,6 +3,10 @@ package com.pedro.finances_manager.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pedro.finances_manager.entities.enums.AccountCurrency;
+import com.pedro.finances_manager.entities.enums.AccountType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,24 +35,25 @@ public class Account {
 
 	@Enumerated(EnumType.STRING)
 	// It's identify a enum cambial money
-	private Currency currency;
+	private AccountCurrency currency;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Column(name = "create_at")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
 	protected Account() {
 		/* JPA persistence, constructor protected */}
 
-	public Account(String name, AccountType type, Currency currency, User user) {
+	public Account(String name, AccountType type, AccountCurrency currency, User user) {
 		this.name = name;
 		this.type = type;
 		this.currency = currency;
 		this.user = user;
-		createAt = LocalDateTime.now();
+		createdAt = LocalDateTime.now();
 	}
 
 	public String getName() {
@@ -67,11 +72,11 @@ public class Account {
 		this.type = type;
 	}
 
-	public Currency getCurrency() {
+	public AccountCurrency getCurrency() {
 		return currency;
 	}
 
-	public void setCurrency(Currency currency) {
+	public void setCurrency(AccountCurrency currency) {
 		this.currency = currency;
 	}
 
@@ -88,7 +93,7 @@ public class Account {
 	}
 
 	public LocalDateTime getCreateAt() {
-		return createAt;
+		return createdAt;
 	}
 
 	@Override
