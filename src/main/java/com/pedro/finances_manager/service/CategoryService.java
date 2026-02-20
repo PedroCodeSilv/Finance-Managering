@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.pedro.finances_manager.dto.request.CategoryRequestDTO;
 import com.pedro.finances_manager.entities.Category;
 import com.pedro.finances_manager.entities.User;
 import com.pedro.finances_manager.repository.CategoryRepository;
@@ -21,11 +22,15 @@ public class CategoryService {
 		
 	}
 	
-	public Category create(Category category, Long id) {
+	public Category create(CategoryRequestDTO req, Long id) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("User not found: " + id));;
-		category.setUser(user);
-		return categoryRepository.save(category);
+		Category c = new Category(
+				req.name(),
+				req.type(), 
+				user
+				);
+		return categoryRepository.save(c);
 	}
 	
 	public List<Category> listAll(){

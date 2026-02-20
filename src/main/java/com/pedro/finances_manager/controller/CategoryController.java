@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pedro.finances_manager.dto.request.CategoryRequestDTO;
+import com.pedro.finances_manager.dto.response.CategoryResponseDTO;
 import com.pedro.finances_manager.entities.Category;
 import com.pedro.finances_manager.service.CategoryService;
 
@@ -23,8 +25,9 @@ public class CategoryController {
 	}
 	
 	@PostMapping("/users/{id}")
-	public Category create(@RequestBody Category category, @PathVariable Long id) {
-		return categoryService.create(category, id);
+	public CategoryResponseDTO create(@RequestBody CategoryRequestDTO req, @PathVariable Long id) {
+		Category category = categoryService.create(req, id);
+		return CategoryResponseDTO.from(category);
 	}
 	
 	@GetMapping

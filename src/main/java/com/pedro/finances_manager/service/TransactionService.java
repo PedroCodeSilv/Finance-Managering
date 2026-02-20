@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.pedro.finances_manager.dto.request.TransictionRequest;
+import com.pedro.finances_manager.dto.request.TransactionRequestDTO;
 import com.pedro.finances_manager.entities.Account;
 import com.pedro.finances_manager.entities.Category;
 import com.pedro.finances_manager.entities.Transaction;
@@ -30,25 +30,26 @@ public class TransactionService {
 		this.categoryRepository = categoryRepository;
 	}
 
-	public Transaction create(TransictionRequest req, Long id) {
+	public Transaction create(TransactionRequestDTO req, Long id) {
 
-		if ( req.getCategoryId() == null) {
+		if ( req.categoryId() == null) {
 		    throw new RuntimeException("categoryId é obrigatório");
 		}
 
-		if (req.getAccountId() == null) {
+		if (req.accountId() == null) {
 		    throw new RuntimeException("accountId é obrigatório");
 		}
-
-		Account account = accountRepository.findById(req.getAccountId())
-				.orElseThrow(() -> new RuntimeException("Conta não encontrada para esse usuario"));
-		Category category = categoryRepository.findById(req.getCategoryId())
-				.orElseThrow(() -> new RuntimeException("Categoria não encontrada para essa conta"));
 		User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not fund!: " + id));
 
+		Account account = accountRepository.findByIdAndUserId(req.accountId(), user.getId())
+				.orElseThrow(() -> new RuntimeException("Conta não encontrada para esse usuario"));
+		Category category = categoryRepository.findByIdAndUserId(req.categoryId(), user.getId())
+				.orElseThrow(() -> new RuntimeException("Categoria não encontrada para essa conta"));
+		
+
 		Transaction t = new Transaction(
-				req.getAmount(),
-				req.getDescription(),
+				req.amount(),
+				req.description(),
 				user,
 				account,
 				category
@@ -58,8 +59,8 @@ public class TransactionService {
 		return transactionRepository.save(t);
 	}
 
-	public List<Transaction> listAll() {
-		return transactionRepository.findAll();
+	public List<Transaction> listAll(Long userId) {
+		return transactionRepository.findByUserId(userId);
 	}
 
 }

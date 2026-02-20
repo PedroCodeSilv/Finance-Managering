@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pedro.finances_manager.dto.request.TransictionRequest;
+import com.pedro.finances_manager.dto.request.TransactionRequestDTO;
+import com.pedro.finances_manager.dto.response.TransactionResponseDTO;
 import com.pedro.finances_manager.entities.Transaction;
 import com.pedro.finances_manager.service.TransactionService;
 
@@ -24,14 +25,16 @@ public class TransactionController {
 	}
 	
 	@PostMapping("users/{id}")
-	public Transaction create(@RequestBody TransictionRequest req, @PathVariable Long id) {
-		return transactionService.create(req, id);
+	public TransactionResponseDTO create(@RequestBody TransactionRequestDTO req, @PathVariable Long id) {
+		
+		Transaction t = transactionService.create(req, id);
+		return TransactionResponseDTO.from(t);
 		
 	}
 	
-	@GetMapping
-	public List<Transaction> listAll(){
-		return transactionService.listAll();
+	@GetMapping("users/{userId}/transactions")
+	public List<Transaction> listAll(@PathVariable Long userId){
+		return transactionService.listAll(userId);
 	}
 	
 

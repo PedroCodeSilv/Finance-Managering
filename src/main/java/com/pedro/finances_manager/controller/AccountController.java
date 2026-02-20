@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pedro.finances_manager.dto.request.AccountRequestDTO;
+import com.pedro.finances_manager.dto.response.AccountResponseDTO;
 import com.pedro.finances_manager.entities.Account;
 import com.pedro.finances_manager.service.AccountService;
 
@@ -23,8 +25,9 @@ public class AccountController {
 	}
 	
 	@PostMapping("/users/{id}")
-	public Account create(@RequestBody Account account, @PathVariable Long id) {
-		return accountService.create(account, id);
+	public AccountResponseDTO create(@RequestBody AccountRequestDTO req, @PathVariable Long id) {
+		Account account = accountService.create(req, id);
+		return AccountResponseDTO.from(account);
 	}
 	
 	@GetMapping

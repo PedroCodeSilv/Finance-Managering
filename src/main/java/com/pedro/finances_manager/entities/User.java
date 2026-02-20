@@ -3,6 +3,9 @@ package com.pedro.finances_manager.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,9 +22,10 @@ public class User {
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="nome",  nullable=false )
+	@Column(name="name",  nullable=false )
 	private String name;
 	
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
 	@Column(name="password_hash", nullable=false )
 	private String passwordHash;
 	
@@ -38,6 +42,8 @@ public class User {
 	public User(String name, String passwordHash, String Email) {
 		
 		this.name = name;
+		
+		
 		this.passwordHash = passwordHash;
 		this.email = Email;
 		this.createdAt = LocalDateTime.now();

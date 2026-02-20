@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pedro.finances_manager.dto.request.UserRequestDTO;
+import com.pedro.finances_manager.dto.response.UserResponseDTO;
 import com.pedro.finances_manager.entities.User;
 import com.pedro.finances_manager.service.UserService;
 
@@ -23,8 +25,10 @@ public class UserController {
 	
 	
 	@PostMapping
-	public User create(@RequestBody User user) {
-		return userService.create(user);
+	public UserResponseDTO create(@RequestBody UserRequestDTO req) {
+		
+		User u = userService.create(req);
+		return  UserResponseDTO.from(u);
 	}
 	
 	@GetMapping

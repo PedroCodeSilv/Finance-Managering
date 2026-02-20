@@ -2,9 +2,9 @@ package com.pedro.finances_manager.service;
 
 import java.util.List;
 
-
 import org.springframework.stereotype.Service;
 
+import com.pedro.finances_manager.dto.request.AccountRequestDTO;
 import com.pedro.finances_manager.entities.Account;
 import com.pedro.finances_manager.entities.User;
 import com.pedro.finances_manager.repository.AccountRepository;
@@ -23,9 +23,16 @@ public class AccountService {
 
 	}
 
-	public Account create(Account account, Long id) {
+	public Account create(AccountRequestDTO req, Long id) {
 		User user = findUserForAccount(id);
-		account.setUser(user);
+		Account account = new Account(
+				req.name(),
+				req.type(),
+				req.currency(),
+				user
+				
+				);
+				
 		return accountRepository.save(account);
 	}
 
