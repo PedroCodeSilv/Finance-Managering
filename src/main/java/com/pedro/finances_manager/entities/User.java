@@ -29,7 +29,7 @@ public class User {
 	@Column(name="password_hash", nullable=false )
 	private String passwordHash;
 	
-	@Column(name="email",  nullable=false )
+	@Column(name="email",  nullable=false, unique=true )
 	private String email;
 	@Column(name="create_at")
 	private LocalDateTime createdAt;
@@ -45,7 +45,7 @@ public class User {
 		
 		
 		this.passwordHash = passwordHash;
-		this.email = Email;
+		this.email = Email.toLowerCase();
 		this.createdAt = LocalDateTime.now();
 	};
 
@@ -105,6 +105,13 @@ public class User {
 		
 		
 	};
+	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", passwordHash=" + passwordHash + ", email=" + email
+				+ ", createdAt=" + createdAt + "]";
+	}
+	
 	
 	/*comment
 	 * 
