@@ -1,11 +1,11 @@
 package com.pedro.finances_manager.dto.response;
 
-import com.pedro.finances_manager.entities.User;
 
-public record LoginResponseDTO(String name, String email) {
+
+public record LoginResponseDTO(String token) {
 	
-	public static LoginResponseDTO loginAuth(User user) {
-		return new LoginResponseDTO(user.getName(), user.getEmail());
+	public static LoginResponseDTO loginAuth(String token) {
+		return new LoginResponseDTO(token);
 	}
 
 }

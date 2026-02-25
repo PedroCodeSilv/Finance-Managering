@@ -24,7 +24,7 @@ public class UserController {
 	}
 	
 	
-	@PostMapping
+	@PostMapping("/register")
 	public UserResponseDTO create(@RequestBody UserRequestDTO req) {
 		
 		User u = userService.create(req);

@@ -7,23 +7,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pedro.finances_manager.dto.request.LoginRequestDTO;
 import com.pedro.finances_manager.dto.response.LoginResponseDTO;
-import com.pedro.finances_manager.entities.User;
-import com.pedro.finances_manager.service.LoginService;
+
+import com.pedro.finances_manager.service.AuthService;
 
 
 @RestController
-@RequestMapping("api/auth/login")
-public class LoginController {
+@RequestMapping("api/auth")
+public class AuthController {
 	
-	private LoginService loginService;
+	private AuthService authService;
 	
-	public LoginController(LoginService loginService) {
-		this.loginService = loginService;
+	public AuthController(AuthService authService) {
+		this.authService = authService;
 	}
 
-	@PostMapping
+	@PostMapping("/login")
 	public LoginResponseDTO authLogin(@RequestBody LoginRequestDTO req) {
-		User user = loginService.loginAuth(req);
-		return LoginResponseDTO.loginAuth(user);
+	
+		
+		return  authService.loginAuth(req);
 	}
 }
