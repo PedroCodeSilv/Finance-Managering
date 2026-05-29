@@ -1,4 +1,6 @@
 package com.pedro.finances_manager.dto.transaction.project;
 
-public record AcountCategoryLink() {
+import com.pedro.finances_manager.entities.Category;
+
+public record AccountCategoryLink(Long accountId, Category category) {
 }

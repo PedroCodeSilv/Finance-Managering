@@ -3,14 +3,12 @@ package com.pedro.finances_manager.service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pedro.finances_manager.dto.request.LoginRequestDTO;
-import com.pedro.finances_manager.dto.response.LoginResponseDTO;
+import com.pedro.finances_manager.dto.auth.request.LoginRequestDTO;
+import com.pedro.finances_manager.dto.auth.response.LoginResponseDTO;
 import com.pedro.finances_manager.entities.User;
 import com.pedro.finances_manager.repository.UserRepository;
 import com.pedro.finances_manager.security.TokenConfig;

@@ -1,4 +1,4 @@
-package com.pedro.finances_manager.dto.response;
+package com.pedro.finances_manager.dto.auth.response;
 
 
 

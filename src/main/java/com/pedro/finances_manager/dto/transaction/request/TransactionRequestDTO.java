@@ -1,4 +1,4 @@
-package com.pedro.finances_manager.dto.request;
+package com.pedro.finances_manager.dto.transaction.request;
 
 import java.math.BigDecimal;
 

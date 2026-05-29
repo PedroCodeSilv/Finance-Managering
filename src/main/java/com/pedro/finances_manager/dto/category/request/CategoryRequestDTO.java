@@ -1,4 +1,4 @@
-package com.pedro.finances_manager.dto.request;
+package com.pedro.finances_manager.dto.category.request;
 
 import com.pedro.finances_manager.entities.enums.CategoryType;
 

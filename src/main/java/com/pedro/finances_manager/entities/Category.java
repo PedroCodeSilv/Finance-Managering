@@ -91,10 +91,14 @@ public class Category {
 		if(!(o instanceof Category other)) return false;
 		return id != null && id.equals(other.id);
 	}
-	
-	
-	
-	
-	
 
+
+	@Override
+	public String toString() {
+		return "Category{" +
+				"name='" + name + '\'' +
+				", id=" + id +
+				", type=" + type +
+				'}';
+	}
 }

@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 null,
                                 authorities
                         );
-                System.out.println("ROLE = " + userData.role());
+                
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);

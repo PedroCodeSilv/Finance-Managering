@@ -2,37 +2,42 @@ package com.pedro.finances_manager.controller;
 
 import java.util.List;
 
+import com.pedro.finances_manager.security.JWTUserData;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pedro.finances_manager.dto.request.CategoryRequestDTO;
-import com.pedro.finances_manager.dto.response.CategoryResponseDTO;
-import com.pedro.finances_manager.entities.Category;
+import com.pedro.finances_manager.dto.category.request.CategoryRequestDTO;
+import com.pedro.finances_manager.dto.category.response.CategoryResponseDTO;
 import com.pedro.finances_manager.service.CategoryService;
 
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
 	
-	private CategoryService categoryService;
+	private final CategoryService categoryService;
 	
 	public CategoryController(CategoryService categoryService) {
+
 		this.categoryService = categoryService;
 	}
 	
-	@PostMapping("/users/{id}")
-	public CategoryResponseDTO create(@RequestBody CategoryRequestDTO req, @PathVariable Long id) {
-		Category category = categoryService.create(req, id);
-		return CategoryResponseDTO.from(category);
+	@PostMapping("/user")
+	public CategoryResponseDTO create(@RequestBody CategoryRequestDTO req,
+									  @AuthenticationPrincipal JWTUserData user) {
+		categoryService.create(req, user.userId());
+		return new CategoryResponseDTO(req.name(), req.type());
+	}
+
+	@GetMapping
+	public List<CategoryResponseDTO> findAll(@AuthenticationPrincipal JWTUserData user){
+
+
+		return categoryService.findAll(user.userId());
 	}
 	
-	@GetMapping
-	public List<Category> listAll() {
-		return categoryService.listAll();
-	}
 
 }

@@ -2,9 +2,11 @@ package com.pedro.finances_manager.service;
 
 import java.util.List;
 
+import com.pedro.finances_manager.dto.transaction.response.TransactionResponseDTO;
+import com.pedro.finances_manager.dto.report.TransactionByCategory;
 import org.springframework.stereotype.Service;
 
-import com.pedro.finances_manager.dto.request.TransactionRequestDTO;
+import com.pedro.finances_manager.dto.transaction.request.TransactionRequestDTO;
 import com.pedro.finances_manager.entities.Account;
 import com.pedro.finances_manager.entities.Category;
 import com.pedro.finances_manager.entities.Transaction;
@@ -30,7 +32,7 @@ public class TransactionService {
 		this.categoryRepository = categoryRepository;
 	}
 
-	public Transaction create(TransactionRequestDTO req, Long id) {
+	public TransactionResponseDTO create(TransactionRequestDTO req, Long id) {
 
 		if ( req.categoryId() == null) {
 		    throw new RuntimeException("categoryId é obrigatório");
@@ -54,13 +56,26 @@ public class TransactionService {
 				account,
 				category
 				);
-		
+		transactionRepository.save(t);
 
-		return transactionRepository.save(t);
+		return new TransactionResponseDTO(t.getId(), t.getAmount(), t.getDescription());
 	}
 
-	public List<Transaction> listAll(Long userId) {
-		return transactionRepository.findByUserId(userId);
+	public List<TransactionByCategory> showTransactionByCategory(Long id){
+
+
+
+		return transactionRepository.listAllTransactionByCategoryByUser(id);
 	}
+
+	public List<TransactionByCategory> showTransactionByCategoryTwo(Long id){
+
+
+
+		return transactionRepository.listAllTransactionByCategoryByUser(id);
+	}
+
+
+
 
 }

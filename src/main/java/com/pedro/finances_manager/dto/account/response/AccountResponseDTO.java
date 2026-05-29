@@ -1,4 +1,4 @@
-package com.pedro.finances_manager.dto.acount.response;
+package com.pedro.finances_manager.dto.account.response;
 
 import com.pedro.finances_manager.entities.Account;
 import com.pedro.finances_manager.entities.enums.AccountCurrency;

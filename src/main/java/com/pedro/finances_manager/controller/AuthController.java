@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pedro.finances_manager.dto.request.LoginRequestDTO;
-import com.pedro.finances_manager.dto.response.LoginResponseDTO;
-
+import com.pedro.finances_manager.dto.auth.request.LoginRequestDTO;
+import com.pedro.finances_manager.dto.auth.response.LoginResponseDTO;
 import com.pedro.finances_manager.service.AuthService;
 
 
@@ -15,7 +14,7 @@ import com.pedro.finances_manager.service.AuthService;
 @RequestMapping("api/auth")
 public class AuthController {
 	
-	private AuthService authService;
+	final private AuthService authService;
 	
 	public AuthController(AuthService authService) {
 		this.authService = authService;

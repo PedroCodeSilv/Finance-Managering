@@ -1,41 +1,45 @@
 package com.pedro.finances_manager.controller;
 
-import java.util.List;
+import com.pedro.finances_manager.dto.report.TransactionByCategory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.pedro.finances_manager.dto.request.TransactionRequestDTO;
-import com.pedro.finances_manager.dto.response.TransactionResponseDTO;
-import com.pedro.finances_manager.entities.Transaction;
+import com.pedro.finances_manager.dto.transaction.request.TransactionRequestDTO;
+import com.pedro.finances_manager.dto.transaction.response.TransactionResponseDTO;
+import com.pedro.finances_manager.security.JWTUserData;
 import com.pedro.finances_manager.service.TransactionService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
 	
-	public TransactionService transactionService;
-	
-	public TransactionController(TransactionService transactionService) {
+	private final TransactionService transactionService;
+
+
+
+    public TransactionController(TransactionService transactionService
+			 ) {
 		this.transactionService = transactionService;
+
 	}
 	
-	@PostMapping("users/{id}")
-	public TransactionResponseDTO create(@RequestBody TransactionRequestDTO req, @PathVariable Long id) {
+	@PostMapping("/user")
+	public TransactionResponseDTO create(@RequestBody TransactionRequestDTO req,
+										 @AuthenticationPrincipal JWTUserData user) {
 		
-		Transaction t = transactionService.create(req, id);
-		return TransactionResponseDTO.from(t);
+
+		return transactionService.create(req, user.userId());
 		
 	}
-	
-	@GetMapping("users/{userId}/transactions")
-	public List<Transaction> listAll(@PathVariable Long userId){
-		return transactionService.listAll(userId);
+	@GetMapping
+	public List<TransactionByCategory> showAll(JWTUserData user){
+		return transactionService.showTransactionByCategory(user.userId());
 	}
-	
+	@GetMapping("/test/{num}")
+	public List<TransactionByCategory> showAllTwo(@PathVariable Long num){
+        return transactionService.showTransactionByCategoryTwo(num);
+	}
 
 }

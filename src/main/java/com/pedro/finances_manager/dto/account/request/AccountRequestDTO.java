@@ -1,4 +1,4 @@
-package com.pedro.finances_manager.dto.acount.request;
+package com.pedro.finances_manager.dto.account.request;
 
 
 
