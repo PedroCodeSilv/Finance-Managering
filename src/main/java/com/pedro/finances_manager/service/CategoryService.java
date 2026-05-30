@@ -32,13 +32,13 @@ public class CategoryService {
 				user
 				);
 		categoryRepository.save(c);
-		return new CategoryResponseDTO(req.name(), req.type());
+		return new CategoryResponseDTO(c.getId(), c.getName(), c.getType());
 	}
 
 	public List<CategoryResponseDTO> findAll(Long userId){
 
         return  categoryRepository.findAllByUserId(userId).stream().map(category ->
-				new CategoryResponseDTO(category.getName(), category.getType())).toList();
+				new CategoryResponseDTO(category.getId(), category.getName(), category.getType())).toList();
     }
 
 

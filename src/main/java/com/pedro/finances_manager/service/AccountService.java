@@ -1,6 +1,7 @@
 package com.pedro.finances_manager.service;
 
 import com.pedro.finances_manager.dto.account.collection.AccountFindByCategory;
+import com.pedro.finances_manager.dto.account.response.AccountResponseDTO;
 import com.pedro.finances_manager.dto.report.IdentifyIdFinances;
 import com.pedro.finances_manager.dto.transaction.project.AccountCategoryLink;
 import com.pedro.finances_manager.entities.Category;
@@ -54,6 +55,12 @@ public class AccountService {
 				);
 				
 		return accountRepository.save(account);
+	}
+
+	public List<AccountResponseDTO> findAllByUser(Long userId) {
+		return accountRepository.findByUserId(userId).stream()
+				.map(AccountResponseDTO::from)
+				.toList();
 	}
 
 

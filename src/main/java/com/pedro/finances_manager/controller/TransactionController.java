@@ -34,7 +34,7 @@ public class TransactionController {
 		
 	}
 	@GetMapping
-	public List<TransactionByCategory> showAll(JWTUserData user){
+	public List<TransactionByCategory> showAll(@AuthenticationPrincipal JWTUserData user){
 		return transactionService.showTransactionByCategory(user.userId());
 	}
 	@GetMapping("/test/{num}")

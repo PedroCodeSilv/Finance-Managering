@@ -56,9 +56,14 @@ public class TransactionService {
 				account,
 				category
 				);
+
+		if (req.transactionDate() != null) {
+			t.setTransactionDate(req.transactionDate().atStartOfDay());
+		}
+
 		transactionRepository.save(t);
 
-		return new TransactionResponseDTO(t.getId(), t.getAmount(), t.getDescription());
+		return new TransactionResponseDTO(t.getId(), t.getAmount(), t.getDescription(), t.getTransactionDate(), t.getCategory().getType());
 	}
 
 	public List<TransactionByCategory> showTransactionByCategory(Long id){
