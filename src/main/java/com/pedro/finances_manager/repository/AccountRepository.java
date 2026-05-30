@@ -19,6 +19,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	//Get List Account by User
 	List<Account> findByUserId(Long userId);
 
+	//Get List Account by Company
+	List<Account> findByCompanyId(Long companyId);
+
 
 //Amount Account by Category
 	@Query("""

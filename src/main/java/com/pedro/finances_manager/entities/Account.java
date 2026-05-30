@@ -44,6 +44,11 @@ public class Account {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "company_id")
+	private Company company;
+
 	@Column(name = "create_at", nullable = false)
 	private LocalDateTime createdAt;
 
@@ -92,6 +97,14 @@ public class Account {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	public LocalDateTime getCreateAt() {

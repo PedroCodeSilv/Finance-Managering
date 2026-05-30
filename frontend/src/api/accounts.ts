@@ -7,6 +7,7 @@ export interface AccountRequest {
   name: string;
   type: AccountType;
   currency: AccountCurrency;
+  companyId?: number;
 }
 
 export interface AccountResponse {
@@ -14,6 +15,8 @@ export interface AccountResponse {
   name: string;
   type: AccountType;
   currency: AccountCurrency;
+  companyId: number | null;
+  companyName: string | null;
 }
 
 export const createAccount = (data: AccountRequest) =>

@@ -46,4 +46,16 @@ public class ReportService {
 	public List<AccountBalance> getAccountBalances(Long userId) {
 		return transactionRepository.findAccountBalancesByUser(userId);
 	}
+
+	public List<AccountBalance> getAccountBalancesByCompany(Long userId, Long companyId) {
+		return transactionRepository.findAccountBalancesByCompany(userId, companyId);
+	}
+
+	public List<MonthlyBalance> getMonthlyBalanceByCompany(Long userId, Long companyId) {
+		return transactionRepository.findMonthlyBalanceByCompany(userId, companyId);
+	}
+
+	public List<TransactionByCategory> getTransactionsByCategoryByCompany(Long userId, Long companyId) {
+		return transactionRepository.listTransactionByCategoryByCompany(userId, companyId);
+	}
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.pedro.finances_manager.dto.transaction.response.TransactionResponseDTO;
 import com.pedro.finances_manager.dto.report.TransactionByCategory;
+import com.pedro.finances_manager.messaging.event.TransactionCreatedEvent;
+import com.pedro.finances_manager.messaging.producer.TransactionProducer;
 import org.springframework.stereotype.Service;
 
 import com.pedro.finances_manager.dto.transaction.request.TransactionRequestDTO;
@@ -19,17 +21,20 @@ import com.pedro.finances_manager.repository.UserRepository;
 @Service
 public class TransactionService {
 
-	private TransactionRepository transactionRepository;
-	private UserRepository userRepository;
-	private AccountRepository accountRepository;
-	private CategoryRepository categoryRepository;
+	private final TransactionRepository transactionRepository;
+	private final UserRepository userRepository;
+	private final AccountRepository accountRepository;
+	private final CategoryRepository categoryRepository;
+	private final TransactionProducer transactionProducer;
 
 	public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository,
-			AccountRepository accountRepository, CategoryRepository categoryRepository) {
+			AccountRepository accountRepository, CategoryRepository categoryRepository,
+			TransactionProducer transactionProducer) {
 		this.transactionRepository = transactionRepository;
 		this.userRepository = userRepository;
 		this.accountRepository = accountRepository;
 		this.categoryRepository = categoryRepository;
+		this.transactionProducer = transactionProducer;
 	}
 
 	public TransactionResponseDTO create(TransactionRequestDTO req, Long id) {
@@ -63,24 +68,27 @@ public class TransactionService {
 
 		transactionRepository.save(t);
 
+		// Publish event to RabbitMQ
+		transactionProducer.sendTransactionCreated(new TransactionCreatedEvent(
+				t.getId(),
+				user.getId(),
+				account.getId(),
+				category.getId(),
+				category.getName(),
+				category.getType().name(),
+				t.getAmount(),
+				t.getDescription(),
+				t.getTransactionDate()
+		));
+
 		return new TransactionResponseDTO(t.getId(), t.getAmount(), t.getDescription(), t.getTransactionDate(), t.getCategory().getType());
 	}
 
 	public List<TransactionByCategory> showTransactionByCategory(Long id){
-
-
-
 		return transactionRepository.listAllTransactionByCategoryByUser(id);
 	}
 
 	public List<TransactionByCategory> showTransactionByCategoryTwo(Long id){
-
-
-
 		return transactionRepository.listAllTransactionByCategoryByUser(id);
 	}
-
-
-
-
 }
