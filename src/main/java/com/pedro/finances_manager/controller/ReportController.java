@@ -48,6 +48,27 @@ public class ReportController {
 		return reportService.getAccountBalances(user.userId());
 	}
 
+	@GetMapping("/company/{companyId}/balances")
+	public List<AccountBalance> companyBalances(
+			@AuthenticationPrincipal JWTUserData user,
+			@PathVariable Long companyId) {
+		return reportService.getAccountBalancesByCompany(user.userId(), companyId);
+	}
+
+	@GetMapping("/company/{companyId}/monthly-balance")
+	public List<MonthlyBalance> companyMonthlyBalance(
+			@AuthenticationPrincipal JWTUserData user,
+			@PathVariable Long companyId) {
+		return reportService.getMonthlyBalanceByCompany(user.userId(), companyId);
+	}
+
+	@GetMapping("/company/{companyId}/by-category")
+	public List<TransactionByCategory> companyByCategory(
+			@AuthenticationPrincipal JWTUserData user,
+			@PathVariable Long companyId) {
+		return reportService.getTransactionsByCategoryByCompany(user.userId(), companyId);
+	}
+
 	@GetMapping("/account/{accountId}/transactions")
 	public List<TransactionResponseDTO> transactionsByAccount(
 			@AuthenticationPrincipal JWTUserData user,

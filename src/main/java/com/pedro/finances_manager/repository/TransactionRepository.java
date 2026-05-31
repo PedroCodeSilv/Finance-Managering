@@ -35,6 +35,7 @@
 				coalesce(sum(t.amount), 0))
 				from Transaction t
 				where t.user.id = :userId
+				and t.account.company is null
 				group by t.category.id, t.category.name, t.category.type
 				""")
 		List<TransactionByCategory> listAllTransactionByCategoryByUser(Long userId);
@@ -70,6 +71,7 @@
 				)
 				from Transaction t
 				where t.user.id = :userId
+				and t.account.company is null
 				group by YEAR(t.transactionDate), MONTH(t.transactionDate)
 				order by YEAR(t.transactionDate) desc, MONTH(t.transactionDate) desc
 				""")
@@ -100,7 +102,52 @@
 				)
 				from Transaction t
 				where t.user.id = :userId
+				and t.account.company is null
 				group by t.account.id, t.account.name, t.account.type, t.account.currency
 				""")
 		List<com.pedro.finances_manager.dto.report.AccountBalance> findAccountBalancesByUser(Long userId);
+
+		@Query("""
+				select new com.pedro.finances_manager.dto.report.AccountBalance(
+				t.account.id,
+				t.account.name,
+				t.account.type,
+				t.account.currency,
+				coalesce(sum(case when t.category.type = com.pedro.finances_manager.entities.enums.CategoryType.INCOME then t.amount else 0 end), 0),
+				coalesce(sum(case when t.category.type = com.pedro.finances_manager.entities.enums.CategoryType.EXPENSE then t.amount else 0 end), 0)
+				)
+				from Transaction t
+				where t.user.id = :userId
+				and t.account.company.id = :companyId
+				group by t.account.id, t.account.name, t.account.type, t.account.currency
+				""")
+		List<com.pedro.finances_manager.dto.report.AccountBalance> findAccountBalancesByCompany(Long userId, Long companyId);
+
+		@Query("""
+				select new com.pedro.finances_manager.dto.report.MonthlyBalance(
+				YEAR(t.transactionDate),
+				MONTH(t.transactionDate),
+				coalesce(sum(case when t.category.type = com.pedro.finances_manager.entities.enums.CategoryType.INCOME then t.amount else 0 end), 0),
+				coalesce(sum(case when t.category.type = com.pedro.finances_manager.entities.enums.CategoryType.EXPENSE then t.amount else 0 end), 0)
+				)
+				from Transaction t
+				where t.user.id = :userId
+				and t.account.company.id = :companyId
+				group by YEAR(t.transactionDate), MONTH(t.transactionDate)
+				order by YEAR(t.transactionDate) desc, MONTH(t.transactionDate) desc
+				""")
+		List<com.pedro.finances_manager.dto.report.MonthlyBalance> findMonthlyBalanceByCompany(Long userId, Long companyId);
+
+		@Query("""
+				select new com.pedro.finances_manager.dto.report.TransactionByCategory(
+				t.category.id,
+				t.category.name,
+				t.category.type,
+				coalesce(sum(t.amount), 0))
+				from Transaction t
+				where t.user.id = :userId
+				and t.account.company.id = :companyId
+				group by t.category.id, t.category.name, t.category.type
+				""")
+		List<TransactionByCategory> listTransactionByCategoryByCompany(Long userId, Long companyId);
 	}

@@ -1,23 +1,36 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   createAccount,
   type AccountType,
   type AccountCurrency,
 } from "../api/accounts";
+import { listCompanies, type CompanyResponse } from "../api/companies";
 
 export function CreateAccountForm() {
   const [name, setName] = useState("");
   const [type, setType] = useState<AccountType>("CHECKING");
   const [currency, setCurrency] = useState<AccountCurrency>("BRL");
+  const [companyId, setCompanyId] = useState("");
+  const [companies, setCompanies] = useState<CompanyResponse[]>([]);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    listCompanies().then((res) => setCompanies(res.data)).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setMessage("");
     try {
-      await createAccount({ name, type, currency });
+      await createAccount({
+        name,
+        type,
+        currency,
+        companyId: companyId ? parseInt(companyId) : undefined,
+      });
       setMessage("Conta criada com sucesso!");
       setName("");
+      setCompanyId("");
     } catch {
       setMessage("Erro ao criar conta.");
     }
@@ -47,6 +60,17 @@ export function CreateAccountForm() {
         <option value="BRL">BRL</option>
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
+      </select>
+      <select
+        value={companyId}
+        onChange={(e) => setCompanyId(e.target.value)}
+      >
+        <option value="">Pessoal (sem empresa)</option>
+        {companies.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.name} {c.cnpj ? `(${c.cnpj})` : ""}
+          </option>
+        ))}
       </select>
       <button type="submit">Criar</button>
     </form>

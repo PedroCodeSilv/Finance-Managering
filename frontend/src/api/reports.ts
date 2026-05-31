@@ -1,4 +1,5 @@
 import api from "./client";
+import type { TransactionByCategory } from "./transactions";
 
 export interface MonthlyBalance {
   year: number;
@@ -34,6 +35,15 @@ export const getTransactionsByCategory = (categoryId: number) =>
 
 export const getAccountBalances = () =>
   api.get<AccountBalance[]>("/reports/account-balances");
+
+export const getCompanyBalances = (companyId: number) =>
+  api.get<AccountBalance[]>(`/reports/company/${companyId}/balances`);
+
+export const getCompanyMonthlyBalance = (companyId: number) =>
+  api.get<MonthlyBalance[]>(`/reports/company/${companyId}/monthly-balance`);
+
+export const getCompanyByCategory = (companyId: number) =>
+  api.get<TransactionByCategory[]>(`/reports/company/${companyId}/by-category`);
 
 export const getTransactionsByAccount = (accountId: number, startDate?: string, endDate?: string) => {
   const params = new URLSearchParams();
