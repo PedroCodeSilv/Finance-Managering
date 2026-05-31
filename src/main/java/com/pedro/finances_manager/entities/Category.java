@@ -25,17 +25,19 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(name = "name", nullable = false)
 	private String name;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "type", nullable = false, length = 50)
 	private CategoryType type;
 	
-	@Column(name="create_at")
+	@Column(name="create_at", nullable=false)
 	private LocalDateTime createdAt;
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id", nullable=false)
 	private User user;
 	
 	

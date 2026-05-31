@@ -31,6 +31,11 @@ public class AccountController {
 		Account account = accountService.create(req, user);
 		return AccountResponseDTO.from(account);
 	}
+	@GetMapping("/user")
+	public List<AccountResponseDTO> listAll(@AuthenticationPrincipal JWTUserData user) {
+		return accountService.findAllByUser(user.userId());
+	}
+
 	@GetMapping("/test")
 	public List<AccountFindByCategory> find(@AuthenticationPrincipal JWTUserData user){
 		return accountService.createListAccountReport(user.userId());

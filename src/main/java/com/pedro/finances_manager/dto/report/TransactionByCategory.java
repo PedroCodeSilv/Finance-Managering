@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 * */
 public record TransactionByCategory(
 
+Long categoryId,
 String categoryName,
 CategoryType type,
 BigDecimal amount

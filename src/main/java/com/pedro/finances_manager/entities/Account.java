@@ -26,23 +26,30 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "type", nullable = false, length = 50)
 	// It's identify a enum CHECKING, CASH or CREDIT
 	private AccountType type;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "currency", nullable = false, length = 10)
 	// It's identify a enum cambial money
 	private AccountCurrency currency;
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@Column(name = "create_at")
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "company_id")
+	private Company company;
+
+	@Column(name = "create_at", nullable = false)
 	private LocalDateTime createdAt;
 
 	protected Account() {
@@ -90,6 +97,14 @@ public class Account {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	public LocalDateTime getCreateAt() {

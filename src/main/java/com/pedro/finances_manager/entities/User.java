@@ -31,7 +31,7 @@ public class User {
 	
 	@Column(name="email",  nullable=false, unique=true )
 	private String email;
-	@Column(name="create_at")
+	@Column(name="create_at", nullable=false)
 	private LocalDateTime createdAt;
 	
 	

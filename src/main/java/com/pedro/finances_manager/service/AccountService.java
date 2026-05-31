@@ -1,10 +1,13 @@
 package com.pedro.finances_manager.service;
 
 import com.pedro.finances_manager.dto.account.collection.AccountFindByCategory;
+import com.pedro.finances_manager.dto.account.response.AccountResponseDTO;
 import com.pedro.finances_manager.dto.report.IdentifyIdFinances;
 import com.pedro.finances_manager.dto.transaction.project.AccountCategoryLink;
 import com.pedro.finances_manager.entities.Category;
+import com.pedro.finances_manager.entities.Company;
 import com.pedro.finances_manager.repository.CategoryRepository;
+import com.pedro.finances_manager.repository.CompanyRepository;
 import com.pedro.finances_manager.repository.TransactionRepository;
 import com.pedro.finances_manager.security.JWTUserData;
 
@@ -27,20 +30,22 @@ public class AccountService {
 	private final UserRepository userRepository;
 	private final CategoryRepository categoryRepository;
 	private final TransactionRepository transactionRepository;
+	private final CompanyRepository companyRepository;
 	private Collectors Collectors;
 
 
 	public AccountService(AccountRepository accountRepository,
                           UserRepository userRepository,
                           CategoryRepository categoryRepository,
-						  TransactionRepository transactionRepository
+						  TransactionRepository transactionRepository,
+						  CompanyRepository companyRepository
     ) {
 
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
 		this.categoryRepository = categoryRepository;
-
         this.transactionRepository = transactionRepository;
+		this.companyRepository = companyRepository;
     }
 
 	public Account create(AccountRequestDTO req, JWTUserData user) {
@@ -52,8 +57,20 @@ public class AccountService {
 				userData
 				
 				);
+
+		if (req.companyId() != null) {
+			Company company = companyRepository.findByIdAndUserId(req.companyId(), user.userId())
+					.orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
+			account.setCompany(company);
+		}
 				
 		return accountRepository.save(account);
+	}
+
+	public List<AccountResponseDTO> findAllByUser(Long userId) {
+		return accountRepository.findByUserId(userId).stream()
+				.map(AccountResponseDTO::from)
+				.toList();
 	}
 
 

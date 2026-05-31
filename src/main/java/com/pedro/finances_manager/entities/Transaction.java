@@ -34,17 +34,17 @@ public class Transaction {
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "account_id")
+	@JoinColumn(name = "account_id", nullable = false)
 	private Account account;
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "category_id")
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
 	protected Transaction() {
@@ -98,6 +98,10 @@ public class Transaction {
 
 	public LocalDateTime getTransactionDate() {
 		return transactionDate;
+	}
+
+	public void setTransactionDate(LocalDateTime transactionDate) {
+		this.transactionDate = transactionDate;
 	}
 
 	public User getUser() {

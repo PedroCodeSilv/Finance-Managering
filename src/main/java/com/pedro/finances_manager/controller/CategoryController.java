@@ -28,8 +28,7 @@ public class CategoryController {
 	@PostMapping("/user")
 	public CategoryResponseDTO create(@RequestBody CategoryRequestDTO req,
 									  @AuthenticationPrincipal JWTUserData user) {
-		categoryService.create(req, user.userId());
-		return new CategoryResponseDTO(req.name(), req.type());
+		return categoryService.create(req, user.userId());
 	}
 
 	@GetMapping
