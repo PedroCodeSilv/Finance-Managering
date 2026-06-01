@@ -1,5 +1,5 @@
 Tecnologias
 
-Java 21
+Java 17
 SpringBoot
 Postgresql
