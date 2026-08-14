@@ -38,12 +38,6 @@ public class TransactionConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.TRANSACTION_QUEUE)
     public void handleTransactionCreated(TransactionCreatedEvent event) {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
         log.info("Received transaction.created: id={} user={} category={} amount={}",
                 event.transactionId(), event.userId(), event.categoryName(), event.amount());
 

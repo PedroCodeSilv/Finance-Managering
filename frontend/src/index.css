@@ -374,7 +374,7 @@ td {
 }
 
 .account-card {
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #dce3eb 100%);
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 1.25rem;

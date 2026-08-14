@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { listCategories, type CategoryResponse } from "../api/categories";
 import {
   listTransactionsByCategory,
@@ -12,7 +10,8 @@ import {
   type MonthlyBalance,
   type AccountBalance,
 } from "../api/reports";
-import { getUnreadCount } from "../api/notifications";
+import { Sidebar, type Tab } from "../components/Sidebar";
+
 import { listCompanies, type CompanyResponse } from "../api/companies";
 import { CreateAccountForm } from "../components/CreateAccountForm";
 import { CreateCategoryForm } from "../components/CreateCategoryForm";
@@ -21,20 +20,15 @@ import { CreateCompanyForm } from "../components/CreateCompanyForm";
 import { TransactionModal } from "../components/TransactionModal";
 import { AccountStatementModal } from "../components/AccountStatementModal";
 import { CompanyDashboardModal } from "../components/CompanyDashboardModal";
-import { NotificationPanel } from "../components/NotificationPanel";
+
 import { Toast } from "../components/Toast";
 import {
-  LayoutDashboard,
-  Landmark,
-  Tag,
-  ArrowLeftRight,
-  Bell,
-  LogOut,
-  Wallet,
+
   Building2,
   TrendingUp,
   TrendingDown,
   Scale,
+  CirclePlus,
 } from "lucide-react";
 import {
   BarChart,
@@ -49,10 +43,28 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import NotificationsPanel from "../components/NotificationsPanel";
+import CnabMonitor from "../components/CnabMonitor";
+import BudgetPanel from "../components/BudgetPanel";
+import AnomaliesPanel from "../components/AnomaliesPanel";
+import StoragePanel from "../components/StoragePanel";
+
+
 
 const MONTH_NAMES_SHORT = [
-  "", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+  "",
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
 ];
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -62,23 +74,21 @@ const CURRENCY_SYMBOL: Record<string, string> = {
 };
 
 const PIE_COLORS = [
-  "#3498db", "#e74c3c", "#27ae60", "#f39c12", "#9b59b6",
-  "#1abc9c", "#e67e22", "#2980b9", "#c0392b", "#16a085",
+  "#3498db",
+  "#e74c3c",
+  "#27ae60",
+  "#f39c12",
+  "#9b59b6",
+  "#1abc9c",
+  "#e67e22",
+  "#2980b9",
+  "#c0392b",
+  "#16a085",
 ];
 
-type Tab = "overview" | "account" | "category" | "transaction" | "company";
 
-const NAV_ITEMS: { key: Tab; label: string; icon: React.ReactNode }[] = [
-  { key: "overview", label: "Home", icon: <LayoutDashboard size={18} /> },
-  { key: "company", label: "Empresas", icon: <Building2 size={18} /> },
-  { key: "account", label: "Contas", icon: <Landmark size={18} /> },
-  { key: "category", label: "Categorias", icon: <Tag size={18} /> },
-  { key: "transaction", label: "Transações", icon: <ArrowLeftRight size={18} /> },
-];
 
 export function DashboardPage() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [transactions, setTransactions] = useState<TransactionByCategory[]>([]);
   const [monthlyBalance, setMonthlyBalance] = useState<MonthlyBalance[]>([]);
@@ -93,8 +103,7 @@ export function DashboardPage() {
     name: string;
     currency: string;
   } | null>(null);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [showNotifications, setShowNotifications] = useState(false);
+
   const [toast, setToast] = useState<string | null>(null);
   const [companies, setCompanies] = useState<CompanyResponse[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<{
@@ -104,19 +113,17 @@ export function DashboardPage() {
 
   const loadData = async () => {
     try {
-      const [catRes, txRes, balanceRes, accRes, notifRes, compRes] = await Promise.all([
+      const [catRes, txRes, balanceRes, accRes, compRes] = await Promise.all([
         listCategories(),
         listTransactionsByCategory(),
         getMonthlyBalance(),
         getAccountBalances(),
-        getUnreadCount(),
         listCompanies(),
       ]);
       setCategories(catRes.data);
       setTransactions(txRes.data);
       setMonthlyBalance(balanceRes.data);
       setAccountBalances(accRes.data);
-      setUnreadCount(notifRes.data);
       setCompanies(compRes.data);
     } catch {
       // token expired
@@ -127,18 +134,6 @@ export function DashboardPage() {
     loadData();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getUnreadCount().then((res) => setUnreadCount(res.data)).catch(() => {});
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   // Computed data for charts
   const chartData = [...monthlyBalance].reverse().map((b) => ({
     name: `${MONTH_NAMES_SHORT[b.month]}/${b.year.toString().slice(2)}`,
@@ -146,6 +141,7 @@ export function DashboardPage() {
     despesas: b.totalExpense,
     saldo: b.balance,
   }));
+  console.log(chartData);
 
   const pieData = transactions.map((t) => ({
     name: t.categoryName,
@@ -154,59 +150,17 @@ export function DashboardPage() {
   }));
 
   const totalIncome = monthlyBalance.reduce((sum, b) => sum + b.totalIncome, 0);
-  const totalExpense = monthlyBalance.reduce((sum, b) => sum + b.totalExpense, 0);
+  const totalExpense = monthlyBalance.reduce(
+    (sum, b) => sum + b.totalExpense,
+    0,
+  );
   const totalBalance = totalIncome - totalExpense;
 
   return (
     <div className="app-layout">
-      {/* Top Bar */}
-      <header className="topbar">
-        <div className="topbar-brand">
-          <Wallet size={22} color="#fff" />
-          <h1>Finance Manager</h1>
-        </div>
-        <div className="topbar-actions">
-          <button
-            className="btn-notification"
-            onClick={() => setShowNotifications(!showNotifications)}
-          >
-            <Bell size={18} color="#fff" />
-            {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
-          </button>
-          <button onClick={handleLogout} className="btn-logout">
-            <LogOut size={16} />
-            <span>Sair</span>
-          </button>
-        </div>
-      </header>
-
-      {showNotifications && (
-        <NotificationPanel
-          onClose={() => {
-            setShowNotifications(false);
-            getUnreadCount().then((res) => setUnreadCount(res.data)).catch(() => {});
-          }}
-        />
-      )}
-
       <div className="app-body">
-        {/* Sidebar */}
-        <aside className="sidebar">
-          <nav className="sidebar-nav">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.key}
-                className={`sidebar-item ${activeTab === item.key ? "active" : ""}`}
-                onClick={() => setActiveTab(item.key)}
-              >
-                <span className="sidebar-icon">{item.icon}</span>
-                <span className="sidebar-label">{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        </aside>
+        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Main Content */}
         <main className="main-content">
           {activeTab === "overview" && (
             <div>
@@ -237,12 +191,16 @@ export function DashboardPage() {
                   </div>
                 </div>
                 <div className="summary-card">
-                  <div className={`summary-card-icon ${totalBalance >= 0 ? "income-bg" : "expense-bg"}`}>
+                  <div
+                    className={`summary-card-icon ${totalBalance >= 0 ? "income-bg" : "expense-bg"}`}
+                  >
                     <Scale size={20} />
                   </div>
                   <div className="summary-card-info">
                     <span className="summary-card-label">Saldo Geral</span>
-                    <span className={`summary-card-value ${totalBalance >= 0 ? "income" : "expense"}`}>
+                    <span
+                      className={`summary-card-value ${totalBalance >= 0 ? "income" : "expense"}`}
+                    >
                       R$ {totalBalance.toFixed(2)}
                     </span>
                   </div>
@@ -253,7 +211,11 @@ export function DashboardPage() {
               <section className="section">
                 <h3>Minhas Contas</h3>
                 {accountBalances.length === 0 ? (
-                  <p className="empty-state">Nenhuma conta com movimentação.</p>
+                  <>
+                    <p className="empty-state">
+                      Nenhuma conta com movimentação.
+                    </p>
+                  </>
                 ) : (
                   <div className="account-cards">
                     {accountBalances.map((acc) => (
@@ -269,48 +231,67 @@ export function DashboardPage() {
                         }
                       >
                         <div className="account-card-header">
-                          <span className="account-name">{acc.accountName}</span>
+                          <span className="account-name">
+                            {acc.accountName}
+                          </span>
                           <span className="account-type">{acc.type}</span>
                         </div>
-                        <div className={`account-balance ${acc.balance >= 0 ? "positive" : "negative"}`}>
-                          {CURRENCY_SYMBOL[acc.currency] || acc.currency} {acc.balance.toFixed(2)}
+                        <div
+                          className={`account-balance ${acc.balance >= 0 ? "positive" : "negative"}`}
+                        >
+                          {CURRENCY_SYMBOL[acc.currency] || acc.currency}{" "}
+                          {acc.balance.toFixed(2)}
                         </div>
                         <div className="account-details">
-                          <span className="income">↑ {CURRENCY_SYMBOL[acc.currency]} {acc.totalIncome.toFixed(2)}</span>
-                          <span className="expense">↓ {CURRENCY_SYMBOL[acc.currency]} {acc.totalExpense.toFixed(2)}</span>
+                          <span className="income">
+                            ↑ {CURRENCY_SYMBOL[acc.currency]}{" "}
+                            {acc.totalIncome.toFixed(2)}
+                          </span>
+                          <span className="expense">
+                            ↓ {CURRENCY_SYMBOL[acc.currency]}{" "}
+                            {acc.totalExpense.toFixed(2)}
+                          </span>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+             
               </section>
 
               {/* Charts Row */}
               <div className="charts-row">
-
-              {/* Companies Section */}
-              <section className="section">
-                <h3>Minhas Empresas</h3>
-                {companies.length === 0 ? (
-                  <p className="empty-state">Nenhuma empresa cadastrada.</p>
-                ) : (
-                  <div className="company-list">
-                    {companies.map((c) => (
-                      <div
-                        key={c.id}
-                        className="company-item clickable"
-                        onClick={() => setSelectedCompany({ id: c.id, name: c.name })}
-                      >
-                        <Building2 size={16} />
-                        <div className="company-info">
-                          <span className="company-name">{c.name}</span>
-                          {c.cnpj && <span className="company-cnpj">{c.cnpj}</span>}
+                <div style={{ flex: 1 }}>
+                  <NotificationsPanel />
+                  <CnabMonitor />
+                </div>
+                {/* Companies Section */}
+                <section className="section">
+                  <h3>Minhas Empresas</h3>
+                  {companies.length === 0 ? (
+                    <p className="empty-state">Nenhuma empresa cadastrada.</p>
+                  ) : (
+                    <div className="company-list">
+                      {companies.map((c) => (
+                        <div
+                          key={c.id}
+                          className="company-item clickable"
+                          onClick={() =>
+                            setSelectedCompany({ id: c.id, name: c.name })
+                          }
+                        >
+                          <Building2 size={16} />
+                          <div className="company-info">
+                            <span className="company-name">{c.name}</span>
+                            {c.cnpj && (
+                              <span className="company-cnpj">{c.cnpj}</span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
+                      ))}
+                    </div>
+                  )}
+                </section>
                 {/* Bar Chart - Monthly Balance */}
                 <section className="section chart-section">
                   <h3>Receitas vs Despesas</h3>
@@ -318,16 +299,32 @@ export function DashboardPage() {
                     <p className="empty-state">Sem dados para exibir.</p>
                   ) : (
                     <ResponsiveContainer width="100%" height={280}>
-                      <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                      <BarChart
+                        data={chartData}
+                        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                      >
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                         <YAxis tick={{ fontSize: 12 }} />
                         <Tooltip
-                          formatter={(value: number) => `R$ ${value.toFixed(2)}`}
-                          contentStyle={{ borderRadius: 8, border: "1px solid #eee" }}
+                          formatter={(value: number) =>
+                            `R$ ${value.toFixed(2)}`
+                          }
+                          contentStyle={{
+                            borderRadius: 8,
+                            border: "1px solid #a09a9a",
+                          }}
                         />
-                        <Bar dataKey="receitas" fill="#27ae60" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="despesas" fill="#e74c3c" radius={[4, 4, 0, 0]} />
+                        <Bar
+                          dataKey="receitas"
+                          fill="#27ae60"
+                          radius={[4, 4, 0, 0]}
+                        />
+                        <Bar
+                          dataKey="despesas"
+                          fill="#e74c3c"
+                          radius={[4, 4, 0, 0]}
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   )}
@@ -352,10 +349,17 @@ export function DashboardPage() {
                           nameKey="name"
                         >
                           {pieData.map((_, index) => (
-                            <Cell key={index} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                            <Cell
+                              key={index}
+                              fill={PIE_COLORS[index % PIE_COLORS.length]}
+                            />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
+                        <Tooltip
+                          formatter={(value: number) =>
+                            `R$ ${value.toFixed(2)}`
+                          }
+                        />
                         <Legend
                           layout="vertical"
                           align="right"
@@ -368,12 +372,19 @@ export function DashboardPage() {
                     </ResponsiveContainer>
                   )}
                 </section>
+                <div style={{ flex: 1 }}>
+                  <BudgetPanel />
+                  <AnomaliesPanel />
+                  <StoragePanel />
+                </div>
               </div>
 
               {/* Transactions by Category Table */}
               <section className="section">
                 <h3>Transações por Categoria</h3>
-                <p className="hint">Clique numa categoria para ver os detalhes</p>
+                <p className="hint">
+                  Clique numa categoria para ver os detalhes
+                </p>
                 {transactions.length === 0 ? (
                   <p className="empty-state">Nenhuma transação registrada.</p>
                 ) : (
@@ -399,7 +410,11 @@ export function DashboardPage() {
                             }
                           >
                             <td>{t.categoryName}</td>
-                            <td className={t.type === "INCOME" ? "income" : "expense"}>
+                            <td
+                              className={
+                                t.type === "INCOME" ? "income" : "expense"
+                              }
+                            >
                               {t.type === "INCOME" ? "Receita" : "Despesa"}
                             </td>
                             <td>R$ {t.amount.toFixed(2)}</td>
@@ -444,7 +459,6 @@ export function DashboardPage() {
           )}
         </main>
       </div>
-
       {selectedCategory && (
         <TransactionModal
           categoryId={selectedCategory.id}
@@ -452,7 +466,6 @@ export function DashboardPage() {
           onClose={() => setSelectedCategory(null)}
         />
       )}
-
       {selectedAccount && (
         <AccountStatementModal
           accountId={selectedAccount.id}
@@ -461,7 +474,6 @@ export function DashboardPage() {
           onClose={() => setSelectedAccount(null)}
         />
       )}
-
       {selectedCompany && (
         <CompanyDashboardModal
           companyId={selectedCompany.id}
@@ -469,7 +481,6 @@ export function DashboardPage() {
           onClose={() => setSelectedCompany(null)}
         />
       )}
-
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
   );

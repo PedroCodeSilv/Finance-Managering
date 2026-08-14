@@ -1,5 +1,9 @@
 HELP.md
 target/
+
+### CNAB local files (mantém pastas vazias via .gitkeep) ###
+data/cnab/**/*
+!data/cnab/**/.gitkeep
 /bin/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
