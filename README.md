@@ -49,7 +49,13 @@ O PostgreSQL é utilizado como banco de dados principal.
 
 As alterações de estrutura do banco são versionadas utilizando Flyway, permitindo que a evolução do schema acompanhe o código da aplicação.
 
+---
 
+## 🚧 Status do projeto
+
+Em desenvolvimento.
+
+Novas funcionalidades e melhorias de arquitetura estão sendo adicionadas gradualmente.
 
 ---
 
