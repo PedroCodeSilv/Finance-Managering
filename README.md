@@ -1,4 +1,4 @@
-🛠️ Tecnologias
+## 🛠️ Tecnologias
 
 Backend
 Java 17
@@ -27,7 +27,7 @@ Docker Compose
 PostgreSQL 16
 RabbitMQ
 
-💰 Funcionalidades
+## 💰 Funcionalidades
 
 Atualmente o projeto possui funcionalidades relacionadas a:
 
@@ -61,7 +61,7 @@ Novas funcionalidades e melhorias de arquitetura estão sendo adicionadas gradua
 
 
 
-🐳 Executando a infraestrutura
+## 🐳 Executando a infraestrutura
 
 O repositório possui um docker-compose.yml para inicializar PostgreSQL e RabbitMQ.
 
@@ -90,7 +90,8 @@ Linux / macOS
 ./mvnw spring-boot:run
 Windows
 mvnw.cmd spring-boot:run
-🖥️ Executando o frontend
+
+## 🖥️ Executando o frontend
 
 Acesse o diretório:
 
@@ -117,7 +118,7 @@ O repositório também contém uma collection do Postman:
 Finance-Manager.postman_collection.json
 
 
-👨‍💻 Autor
+## 👨‍💻 Autor
 
 Desenvolvido por Pedro Cordeiro.
 
