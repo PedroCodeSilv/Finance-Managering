@@ -79,6 +79,10 @@ public class AccountService {
 			        .orElseThrow(() -> new RuntimeException("User not found: " + id));
 	}
 
+	public Account findAccount(Long id, Long userId){
+		return accountRepository.findByIdAndUserId(id, userId).orElseThrow(()-> new RuntimeException("Reinicie o servidor"));
+	}
+
 	public List<AccountFindByCategory> createListAccountReport(Long userId){
 
 		/*
@@ -132,6 +136,8 @@ public class AccountService {
 
 		return result;
 	}
+
+
 
 
 

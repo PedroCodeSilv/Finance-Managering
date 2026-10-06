@@ -10,6 +10,7 @@ export function BudgetPanel() {
   return (
     <section className="section">
       <h3>Orçamentos</h3>
+      <p>Off</p>
       <div className="budgets">
         {budgets.map((b) => {
           const pct = Math.min(100, Math.round((b.used / b.limit) * 100));
@@ -19,7 +20,9 @@ export function BudgetPanel() {
               <div className="budget-bar">
                 <div className="budget-progress" style={{ width: `${pct}%` }} />
               </div>
-              <div className="budget-meta">{pct}% • R$ {b.used} / R$ {b.limit}</div>
+              <div className="budget-meta">
+                {pct}% • R$ {b.used} / R$ {b.limit}
+              </div>
             </div>
           );
         })}

@@ -4,6 +4,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,18 +36,17 @@ public class AuthService {
 
 
 	public LoginResponseDTO loginAuth(LoginRequestDTO req) {
-		
-		UsernamePasswordAuthenticationToken userAndPass= new UsernamePasswordAuthenticationToken(req.email(), req.password()) ;
+
+		UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(req.email(), req.password());
 		Authentication authentication = authenticationManager.authenticate(userAndPass);
 		UserValidator principal = (UserValidator) authentication.getPrincipal();
-		
+
 		User userToken = principal.getUser();
 		String token = tokenConfig.generetionToken(userToken);
-		
-		
+
+
 		return new LoginResponseDTO(token);
 	}
-	
 	
 
 }

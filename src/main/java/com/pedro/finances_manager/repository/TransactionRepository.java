@@ -150,4 +150,15 @@
 				group by t.category.id, t.category.name, t.category.type
 				""")
 		List<TransactionByCategory> listTransactionByCategoryByCompany(Long userId, Long companyId);
+
+		//Transaction for Tranfers
+
+		@Query("""
+       SELECT COALESCE(SUM(CASE WHEN t.category.id = c.id THEN t.amount ELSE 0 END), 0)
+       FROM Transaction t
+       LEFT JOIN Category c
+       ON t.category.id = c.id
+       WHERE t.account.id = :accountId
+       """)
+		BigDecimal amountAccountId(Long accountId);
 	}

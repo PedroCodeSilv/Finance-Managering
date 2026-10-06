@@ -22,5 +22,17 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			""")
 	List<Category> findCategoryByAccountId(List<Long> id, Long userId);
 
+	@Query("""
+	select c
+	from Category c
+	where c.user.id = :userId and c.name = 'Recebimento'
+""")
+	Optional<Category> findReceiptCategoryById(Long userId);
 
+	@Query("""
+	select c
+	from Category c
+	where c.user.id = :userId and c.name = 'Deposito'
+""")
+	Optional<Category> findDepositCategoryById(Long userId);
 }

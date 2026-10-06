@@ -1,9 +1,11 @@
 package com.pedro.finances_manager.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.pedro.finances_manager.dto.transaction.response.TransactionResponseDTO;
 import com.pedro.finances_manager.dto.report.TransactionByCategory;
+import com.pedro.finances_manager.entities.enums.CategoryType;
 import com.pedro.finances_manager.messaging.event.TransactionCreatedEvent;
 import com.pedro.finances_manager.messaging.producer.TransactionProducer;
 import org.springframework.stereotype.Service;
@@ -83,6 +85,46 @@ public class TransactionService {
 
 		return new TransactionResponseDTO(t.getId(), t.getAmount(), t.getDescription(), t.getTransactionDate(), t.getCategory().getType());
 	}
+
+	public Transaction createCredit(User user, Account account, BigDecimal amount, String description){
+
+		Category cat = categoryRepository
+				.findReceiptCategoryById(user.getId())
+				.orElseThrow(()-> new RuntimeException("Você não tem direito a realizar transações desse tipo"));
+		Transaction transaction = new Transaction(
+				amount,
+				description,
+				user,
+				account,
+				cat
+
+		);
+
+		return transactionRepository.save(transaction);
+	}
+
+
+	public Transaction createDebit(User user, Account account, BigDecimal amount, String description){
+
+		Category cat = categoryRepository
+				.findDepositCategoryById(user.getId())
+				.orElseThrow(()-> new RuntimeException("Algo impossível aconteceu"));
+		Transaction transaction = new Transaction(
+				amount,
+				description,
+				user,
+				account,
+				cat
+
+		);
+
+		return transactionRepository.save(transaction);
+
+
+	}
+
+
+
 
 	public List<TransactionByCategory> showTransactionByCategory(Long id){
 		return transactionRepository.listAllTransactionByCategoryByUser(id);

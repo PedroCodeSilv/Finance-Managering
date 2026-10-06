@@ -19,3 +19,5 @@ export const markAsRead = (id: number) =>
 
 export const markAllAsRead = () =>
   api.put("/notifications/read-all");
+export const List = () =>
+  api.get<NotificationResponse[]>("/notifications");

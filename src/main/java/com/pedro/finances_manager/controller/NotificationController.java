@@ -60,4 +60,5 @@ public class NotificationController {
         unread.forEach(n -> n.setRead(true));
         notificationRepository.saveAll(unread);
     }
+
 }

@@ -51,4 +51,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	List<AccountFindByCategory> reportByCategory(List<Long> id, Long userId);
 
 
+
 }

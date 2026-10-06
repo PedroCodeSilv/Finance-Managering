@@ -11,7 +11,9 @@ interface Props {
 }
 
 export function NotificationPanel({ onClose }: Props) {
-  const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
+  const [notifications, setNotifications] = useState<NotificationResponse[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
 
   const load = () => {
@@ -45,7 +47,9 @@ export function NotificationPanel({ onClose }: Props) {
               Marcar todas como lidas
             </button>
           )}
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}>
+            ✕
+          </button>
         </div>
       </div>
       <div className="notification-list">
@@ -55,7 +59,11 @@ export function NotificationPanel({ onClose }: Props) {
           <p className="notification-empty">Nenhuma notificação nova.</p>
         ) : (
           notifications.map((n) => (
-            <div key={n.id} className="notification-item" onClick={() => handleMarkRead(n.id)}>
+            <div
+              key={n.id}
+              className="notification-item"
+              onClick={() => handleMarkRead(n.id)}
+            >
               <strong>{n.title}</strong>
               <p>{n.message}</p>
               <span className="notification-date">

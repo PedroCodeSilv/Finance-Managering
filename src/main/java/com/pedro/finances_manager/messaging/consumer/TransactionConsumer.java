@@ -89,6 +89,7 @@ public class TransactionConsumer {
                             event.description())
             );
         }
+
     }
 
     private void createNotification(User user, String title, String message) {

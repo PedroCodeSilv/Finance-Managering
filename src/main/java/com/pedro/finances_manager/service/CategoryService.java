@@ -3,6 +3,7 @@ package com.pedro.finances_manager.service;
 import java.util.List;
 
 import com.pedro.finances_manager.dto.category.response.CategoryResponseDTO;
+import com.pedro.finances_manager.entities.enums.CategoryType;
 import org.springframework.stereotype.Service;
 
 import com.pedro.finances_manager.dto.category.request.CategoryRequestDTO;
@@ -33,6 +34,18 @@ public class CategoryService {
 				);
 		categoryRepository.save(c);
 		return new CategoryResponseDTO(c.getId(), c.getName(), c.getType());
+	}
+
+	public void createCategoryInit(User user){
+
+		Category cat = new Category("Recabimento", CategoryType.INCOME, user);
+		Category cat2 = new Category("Depósitos", CategoryType.EXPENSE, user);
+
+		categoryRepository.saveAll(List.of(cat, cat2));
+
+
+
+
 	}
 
 	public List<CategoryResponseDTO> findAll(Long userId){

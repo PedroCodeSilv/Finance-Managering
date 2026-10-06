@@ -1,3 +1,6 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 * {
   margin: 0;
   padding: 0;
@@ -182,6 +185,8 @@ body {
 
 /* ===== Sidebar ===== */
 .sidebar {
+
+
   position: fixed;
   top: 60px;
   left: 0;
@@ -195,11 +200,15 @@ body {
 
 .sidebar-nav {
   display: flex;
+
   flex-direction: column;
   gap: 0.25rem;
   padding: 0 0.75rem;
 }
 
+ul a{
+  text-decoration: none;
+}
 .sidebar-item {
   display: flex;
   align-items: center;
